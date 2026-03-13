@@ -1,30 +1,30 @@
-// Load environment variables from .env file
 require('dotenv').config();
-
-// Now you can access environment variables anywhere in your code
-const dbHost = process.env.DB_HOST;
-const dbUser = process.env.DB_USER;
-
-console.log(`Connecting to database at ${dbHost} with user ${dbUser}`);
-
-// Your other application code follows
-// For example, setting up your server, routes, etc.
-
-
 const express = require('express');
 const mongodb = require('./data/database');
-const bodyParser = require('body-parser');
 const app = express();
-const port = process.env.PORT || 3002;
+const routes = require('./routes');
 
-app.use(bodyParser.json());
-app.use('/', require('./routes'))
+const port = process.env.PORT || 3000;
 
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// Use routes
+app.use('/', routes);
+
+// Initialize database and start server
 mongodb.initDb((err) => {
-    if(err) {
-        console.log(err);
-    }
-    else{app.listen(port, () => {console.log(`database is listening and node Running on port ${port}`)});
-}
+  if (err) {
+    console.log('Database initialization failed:', err);
+  } else {
+    app.listen(port, () => {
+      console.log(`Server is running on http://localhost:${port}`);
+      console.log(`Database connected`);
+    });
+  }
 });
+
+
+
+
