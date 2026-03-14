@@ -1,34 +1,76 @@
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
-let database;
+let contactsDb;
+let usersDb;
 
-const initDb = (callback) => {
-  if (database) {
-    console.log('Database is already initialized!');
-    return callback(null, database);
+// Initialize Contacts Database
+const initContactsDb = async () => {
+  try {
+    if (contactsDb) {
+      console.log('Contacts database already initialized');
+      return contactsDb;
+    }
+
+    const contactsClient = await MongoClient.connect(process.env.MONGODB_URI_CONTACTS);
+    contactsDb = contactsClient.db();
+    console.log('✅ Contacts database connected');
+    return contactsDb;
+  } catch (error) {
+    console.error('❌ Contacts database connection failed:', error);
+    throw error;
   }
-
-  MongoClient.connect(process.env.MONGODB_URI)
-    .then((client) => {
-      database = client.db();
-      console.log('Database connected successfully');
-      callback(null, database);
-    })
-    .catch((err) => {
-      console.error('Failed to connect to database:', err);
-      callback(err);
-    });
 };
 
-const getDatabase = () => {
-  if (!database) {
-    throw Error('Database not initialized');
+// Initialize Users Database
+const initUsersDb = async () => {
+  try {
+    if (usersDb) {
+      console.log('Users database already initialized');
+      return usersDb;
+    }
+
+    const usersClient = await MongoClient.connect(process.env.MONGODB_URI_USERS);
+    usersDb = usersClient.db();
+    console.log('✅ Users database connected');
+    return usersDb;
+  } catch (error) {
+    console.error('❌ Users database connection failed:', error);
+    throw error;
   }
-  return database;
+};
+
+// Initialize ALL databases
+const initAllDatabases = async () => {
+  try {
+    await initContactsDb();
+    await initUsersDb();
+    console.log('✅ All databases initialized');
+  } catch (error) {
+    console.error('❌ Database initialization failed:', error);
+    throw error;
+  }
+};
+
+// Getter functions
+const getContactsDb = () => {
+  if (!contactsDb) {
+    throw new Error('Contacts database not initialized. Call initContactsDb() first.');
+  }
+  return contactsDb;
+};
+
+const getUsersDb = () => {
+  if (!usersDb) {
+    throw new Error('Users database not initialized. Call initUsersDb() first.');
+  }
+  return usersDb;
 };
 
 module.exports = {
-  initDb,
-  getDatabase
+  initContactsDb,
+  initUsersDb,
+  initAllDatabases,
+  getContactsDb,
+  getUsersDb
 };

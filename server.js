@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const mongodb = require('./data/database');
 const app = express();
-const routes = require('./routes');
 
 const port = process.env.PORT || 3000;
 
@@ -10,21 +9,23 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Use routes
-app.use('/', routes);
+// Routes
+app.use('/contacts', require('./routes/contacts'));
+// app.use('/users', require('./routes/users'));  // When you create this
 
-// Initialize database and start server
-mongodb.initDb((err) => {
-  if (err) {
-    console.log('Database initialization failed:', err);
-  } else {
-    app.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
-      console.log(`Database connected`);
-    });
-  }
+app.get('/', (req, res) => {
+  res.send('Multiple Databases API');
 });
 
-
-
-
+// Initialize databases and start server
+mongodb.initAllDatabases()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`🚀 Server running on port ${port}`);
+      console.log(`📊 All databases connected`);
+    });
+  })
+  .catch((error) => {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  });
