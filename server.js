@@ -1,31 +1,37 @@
 require('dotenv').config();
 const express = require('express');
 const mongodb = require('./data/database');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
 const app = express();
 
 const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoding({ extended: true }));
+
+// Swagger Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use('/contacts', require('./routes/contacts'));
-// app.use('/users', require('./routes/users'));  // When you create this
 
+// Root route
 app.get('/', (req, res) => {
-  res.send('Multiple Databases API');
+  res.send('CSE341 Contacts API - Visit /api-docs for documentation');
 });
 
-// Initialize databases and start server
-mongodb.initAllDatabases()
-  .then(() => {
+// Initialize database and start server
+mongodb.initDb((err) => {
+  if (err) {
+    console.log('❌ Failed to initialize database:', err.message);
+    process.exit(1);
+  } else {
     app.listen(port, () => {
       console.log(`🚀 Server running on port ${port}`);
-      console.log(`📊 All databases connected`);
+      console.log(`📊 Database connected`);
+      console.log(`📚 API Docs available at http://localhost:${port}/api-docs`);
     });
-  })
-  .catch((error) => {
-    console.error('Failed to start server:', error);
-    process.exit(1);
-  });
+  }
+});
