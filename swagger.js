@@ -6,16 +6,20 @@ const options = {
     info: {
       title: 'Contacts API',
       version: '1.0.0',
-      description: 'CSE341 Contacts API - CRUD operations for managing contacts'
+      description: 'CSE341 Contacts API Documentation'
     },
     servers: [
       {
-        url: 'https://cse341-ix1i.onrender.com',
+        url: 'http://localhost:3000',
         description: 'Development server'
+      },
+      {
+        url: 'https://cse341-ix1i.onrender.com',
+        description: 'Production server'
       }
     ]
   },
-  apis: ['./routes/*.js']
+  apis: ['./routes/*.js'] // Path to route files
 };
 
 const swaggerSpec = swaggerJsdoc(options);
