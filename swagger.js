@@ -14,7 +14,7 @@ const options = {
         description: 'Development server'
       },
       {
-        url: 'https://your-app-name.onrender.com',
+        url: 'https://cse341-ix1i.onrender.com',
         description: 'Production server'
       }
     ]
