@@ -3,11 +3,13 @@ const express = require('express');
 const mongodb = require('./data/database');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
+const cors = require('cors');  // ← ADD THIS
 const app = express();
 
 const port = process.env.PORT || 3000;
 
 // Middleware
+app.use(cors());  // ← ADD THIS (enable CORS for all routes)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

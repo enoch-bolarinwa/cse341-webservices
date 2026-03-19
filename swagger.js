@@ -10,12 +10,13 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
-        description: 'Development server'
-      },
-      {
         url: 'https://cse341-ix1i.onrender.com',
         description: 'Production server'
+       
+      },
+      {
+         url: 'http://localhost:3000',
+        description: 'Development server'
       }
     ]
   },
