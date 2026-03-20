@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());  // ← ADD THIS (enable CORS for all routes)
+app.use(cors());  
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
